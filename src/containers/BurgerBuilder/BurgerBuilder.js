@@ -9,7 +9,9 @@ const PRICE_MAP = {
     cheese: 0.3,
     meat: 1.8
 }
-
+/**
+ * Represents the BurgerBuilder component
+ */
 class BurgerBuilder extends Component {
     // constructor(props){
     //     super(props);
@@ -22,13 +24,23 @@ class BurgerBuilder extends Component {
             cheese: 0,
             meat: 0
         },
-        totalPrice : 4
+        totalPrice : 4,
+        totalIngQuantity: 0
     }
-
+    
+    /**
+     * This is a generic function for adding and removing ingredients
+     * from the hamburger and updating state accordingly
+     * @param  {string} type - type of the ingredient to operate
+     * @param  {number} op - 1 for add, -1 for remove
+     * @private
+     */
     _operateIngredient = (type, op) => {
-        let newCount = this.state.ingredients[type] + 1 * op;
+        const countDiff =  1 * op
+        let newCount = this.state.ingredients[type] + countDiff;
         if (newCount < 0)
             return;
+        const newTotalIngQuantityDiff = this.state.totalIngQuantity + countDiff;
         let newPrice = this.state.totalPrice + PRICE_MAP[type] * op;
         let newIngredients = {
             ...this.state.ingredients
@@ -36,7 +48,8 @@ class BurgerBuilder extends Component {
         newIngredients[type] = newCount;
         this.setState({
             ingredients: newIngredients,
-            totalPrice: newPrice
+            totalPrice: newPrice,
+            totalIngQuantity: newTotalIngQuantityDiff
         });
     }
 
@@ -64,7 +77,8 @@ class BurgerBuilder extends Component {
                     ingredientAdded={this.addIngredientHandler}
                     ingredientRemoved={this.removeIngredientHandler}
                     disabledBtns={disabledBtns}
-                    price={this.state.totalPrice.toFixed(2)} />
+                    price={this.state.totalPrice.toFixed(2)}
+                    purchasable = {this.state.totalIngQuantity !== 0} />
             </React.Fragment>
         );
     }
